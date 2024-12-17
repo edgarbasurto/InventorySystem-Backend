@@ -4,6 +4,7 @@ namespace InventorySystem.Application.DTOs;
 
 public class ProductDto
 {
+    public int Id { get; set; }
     [Required(ErrorMessage = "El nombre es obligatorio.")]
     public string Name { get; set; }
 

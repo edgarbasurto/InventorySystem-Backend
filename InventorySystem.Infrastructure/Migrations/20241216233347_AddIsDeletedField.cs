@@ -15,7 +15,7 @@ namespace InventorySystem.Infrastructure.Migrations
                 table: "Products",
                 type: "bit",
                 nullable: false,
-                defaultValue: false);
+                defaultValue: true);
         }
 
         /// <inheritdoc />

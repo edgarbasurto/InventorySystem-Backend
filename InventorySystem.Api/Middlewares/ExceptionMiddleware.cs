@@ -3,38 +3,43 @@ using System.Text.Json;
 
 namespace InventorySystem.Api.Middlewares;
 
-public class ExceptionMiddleware
-{
-    private readonly RequestDelegate _next;
-
-    public ExceptionMiddleware(RequestDelegate next)
+    public class ExceptionMiddleware
     {
-        _next = next;
-    }
+        private readonly RequestDelegate _next;
+        private readonly ILogger<ExceptionMiddleware> _logger;
 
-    public async Task InvokeAsync(HttpContext context)
-    {
-        try
+        public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger)
         {
-            await _next(context); 
+            _next = next;
+            _logger = logger;
         }
-        catch (Exception ex)
+
+        public async Task Invoke(HttpContext context)
         {
-            await HandleExceptionAsync(context, ex);
+            try
+            {
+                await _next(context);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unhandled Exception Occurred");
+                await HandleExceptionAsync(context, ex);
+            }
+        }
+
+        private static Task HandleExceptionAsync(HttpContext context, Exception exception)
+        {
+            context.Response.ContentType = "application/json";
+            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+
+            var response = new
+            {
+                StatusCode = context.Response.StatusCode,
+                Message = "An unexpected error occurred. Please try again later.",
+                Details = exception.Message // Avoid exposing internal details in production
+            };
+
+            var jsonResponse = JsonSerializer.Serialize(response);
+            return context.Response.WriteAsync(jsonResponse);
         }
     }
-
-    private static Task HandleExceptionAsync(HttpContext context, Exception exception)
-    {
-        context.Response.ContentType = "application/json";
-        context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-
-        var response = new
-        {
-            Message = "Ocurrió un error inesperado en el servidor.",
-            Details = exception.Message 
-        };
-
-        return context.Response.WriteAsync(JsonSerializer.Serialize(response));
-    }
-}

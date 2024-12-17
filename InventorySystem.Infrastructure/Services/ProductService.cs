@@ -1,10 +1,9 @@
 using InventorySystem.Application.DTOs;
 using InventorySystem.Application.Interfaces;
-using InventorySystem.Domain.Entities;
 using InventorySystem.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace InventorySystem.Application.Services;
+namespace InventorySystem.Infrastructure.Services;
 
 public class ProductService : IProductService
 {
@@ -17,7 +16,7 @@ public class ProductService : IProductService
 
     public async Task<int> AddProductAsync(ProductDto productDto)
     {
-        var product = new Product
+        var product = new Domain.Entities.Product
         {
             Name = productDto.Name,
             Price = productDto.Price,
@@ -25,6 +24,7 @@ public class ProductService : IProductService
             Stock = productDto.Stock,
             Status = productDto.Status,
             ImageUrl = productDto.ImageUrl,
+            IsActive = true,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
         };
@@ -63,6 +63,7 @@ public class ProductService : IProductService
         
         var productDtos = products.Select(p => new ProductDto
         {
+            Id = p.Id,
             Name = p.Name,
             Price = p.Price,
             Description = p.Description,
@@ -102,8 +103,7 @@ public class ProductService : IProductService
 
         if (product == null)
             return false;
-
-        // Actualizar los campos del producto
+        
         product.Name = productDto.Name;
         product.Price = productDto.Price;
         product.Description = productDto.Description;
@@ -124,8 +124,7 @@ public class ProductService : IProductService
 
         if (product == null)
             return false;
-
-        // Marcar el producto como eliminado
+        
         product.IsActive = false;
         product.UpdatedAt = DateTime.UtcNow;
 
