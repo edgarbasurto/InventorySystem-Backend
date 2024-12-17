@@ -1,0 +1,12 @@
+﻿services:
+  inventorysystem:
+    image: inventorysystem
+    build:
+      context: .
+      dockerfile: InventorySystem/Dockerfile
+
+  inventorysystem.api:
+    image: inventorysystem.api
+    build:
+      context: .
+      dockerfile: InventorySystem.Api/Dockerfile

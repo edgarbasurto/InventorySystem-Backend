@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\InventorySystem.Domain\InventorySystem.Domain.csproj" />
+      <ProjectReference Include="..\InventorySystem.Infrastructure\InventorySystem.Infrastructure.csproj" />
+    </ItemGroup>
+
+</Project>
